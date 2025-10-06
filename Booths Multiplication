@@ -1,0 +1,22 @@
+def booths_multiplication(multiplicand, multiplier, bits=32):
+    m = multiplicand & ((1 << bits) - 1)
+    r = multiplier & ((1 << bits) - 1)
+    A = 0
+    Q = r
+    Q_1 = 0
+    count = bits
+    mask = (1 << bits) - 1
+    while count > 0:
+        if (Q & 1) == 1 and Q_1 == 0:
+            A = (A - m) & ((1 << (bits + 1)) - 1)
+        elif (Q & 1) == 0 and Q_1 == 1:
+            A = (A + m) & ((1 << (bits + 1)) - 1)
+        Q_1 = Q & 1
+        Q = (Q >> 1) | ((A & 1) << (bits - 1))
+        A = A >> 1
+        count -= 1
+    result = (Q | (A << bits)) & ((1 << (2 * bits)) - 1)
+    if (multiplicand < 0) ^ (multiplier < 0):
+        result = (~result + 1) & ((1 << (2 * bits)) - 1)
+        result -= (1 << (2 * bits))
+    return result
